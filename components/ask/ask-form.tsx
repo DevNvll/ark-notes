@@ -5,6 +5,7 @@ interface Props {
   inflight: boolean
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
 }
+
 export function AskForm({ inflight, onSubmit }: Props) {
   return (
     <form onSubmit={onSubmit} className="flex flex-col space-y-4">

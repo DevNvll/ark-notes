@@ -1,9 +1,9 @@
 import { Configuration, OpenAIApi } from 'openai'
 import GPT3NodeTokenizer from 'gpt3-tokenizer'
 import { OpenAI } from 'openai-streams'
-import { VectorDB } from './vector-db'
+import { API_KEY_LOCAL_STORAGE_KEY } from './constants'
 
-const apiKey = window.localStorage.getItem('openai-api-key')
+const apiKey = window.localStorage.getItem(API_KEY_LOCAL_STORAGE_KEY)
 
 const configuration = new Configuration({
   apiKey

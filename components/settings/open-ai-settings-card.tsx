@@ -9,15 +9,16 @@ import {
   CardTitle
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { API_KEY_LOCAL_STORAGE_KEY } from '@/lib/constants'
 
 export default function OpenAISettingsCard() {
   const [apiKey, setAPIKey] = useState(
-    window.localStorage.getItem('openai-api-key') || ''
+    window.localStorage.getItem(API_KEY_LOCAL_STORAGE_KEY) || ''
   )
   const [showAPIKey, setShowAPIKey] = useState(false)
 
   function saveAPIKey(apiKey: string) {
-    window.localStorage.setItem('openai-api-key', apiKey)
+    window.localStorage.setItem(API_KEY_LOCAL_STORAGE_KEY, apiKey)
   }
   return (
     <Card>
