@@ -1,7 +1,10 @@
 import { Configuration, OpenAIApi } from 'openai'
 import GPT3NodeTokenizer from 'gpt3-tokenizer'
 import { OpenAI } from 'openai-streams'
-import { API_KEY_LOCAL_STORAGE_KEY } from './constants'
+import {
+  API_KEY_LOCAL_STORAGE_KEY,
+  CUSTOM_PROMPT_LOCAL_STORAGE_KEY
+} from './constants'
 
 const apiKey = window.localStorage.getItem(API_KEY_LOCAL_STORAGE_KEY)
 
@@ -46,20 +49,39 @@ export async function generateContext(documents: string[]) {
   return contextText
 }
 
+export function generateContextPrompt(context: string) {
+  const defaultPrompt = `
+    You are a helpful AI assistant that answer questions about user texts. 
+    Given the following relevant sections from the user notes, answer the question using only that information. 
+    If you are unsure and the answer is not explicitly written in the notes, just say \"Sorry, I don't know how to help with that.\" 
+    Relevant information:  
+    ${context} 
+    (You do not need to use these pieces of information if not relevant)
+  `
+
+  const customPrompt = localStorage.getItem(CUSTOM_PROMPT_LOCAL_STORAGE_KEY)
+
+  const hasContextVariable = customPrompt?.includes('{{context}}')
+
+  if (!hasContextVariable && customPrompt) {
+    console.warn('Custom prompt does not contain {{context}} variable')
+  }
+
+  const prompt =
+    customPrompt && hasContextVariable
+      ? customPrompt.replace('{{context}}', context)
+      : defaultPrompt
+
+  return prompt
+}
+
 export async function getAnswer(question: string, context: string) {
   const response = await openai.createChatCompletion({
     model: 'gpt-3.5-turbo',
     messages: [
       {
         role: 'system',
-        content: `
-          You are a helpful AI assistant that answer questions about user texts. 
-          Given the following relevant sections from the user notes, answer the question using only that information. 
-          If you are unsure and the answer is not explicitly written in the notes, just say \"Sorry, I don't know how to help with that.\" 
-          Relevant information:  
-          ${context} 
-          (You do not need to use these pieces of information if not relevant)
-        `
+        content: generateContextPrompt(context)
       },
       { role: 'user', content: question }
     ]
