@@ -3,6 +3,7 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import ApiKeyModal from '@/components/api-key-modal'
+import { Toaster } from '@/components/ui/toaster'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,6 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn('dark', inter.className)}>
         <ApiKeyModal />
+        <Toaster />
         <div className="border-b ">
           <div className="flex items-center h-16 px-4">
             <MainNav className="mx-6" />
