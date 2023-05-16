@@ -52,7 +52,14 @@ export async function getAnswer(question: string, context: string) {
     messages: [
       {
         role: 'system',
-        content: `You are a AI assistant that answer questions about user notes. Given the following sections from your user notes, answer the question using only that information. If you are unsure and the answer is not explicitly written in the notes, say \"Sorry, I don't know how to help with that.\" Context sections:  ${context}`
+        content: `
+          You are a helpful AI assistant that answer questions about user texts. 
+          Given the following relevant sections from the user notes, answer the question using only that information. 
+          If you are unsure and the answer is not explicitly written in the notes, just say \"Sorry, I don't know how to help with that.\" 
+          Relevant information:  
+          ${context} 
+          (You do not need to use these pieces of information if not relevant)
+        `
       },
       { role: 'user', content: question }
     ]
