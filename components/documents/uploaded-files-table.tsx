@@ -36,10 +36,10 @@ export default function UploadedFilesTable({ files, handleDeleteFile }: Props) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {files.map((file) => {
+          {files.map((file, idx) => {
             return (
               <>
-                <TableRow key={file.fileId}>
+                <TableRow key={idx}>
                   <TableCell className="w-[100px]">
                     <button
                       onClick={() => {
