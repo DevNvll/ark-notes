@@ -10,25 +10,26 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { API_KEY_LOCAL_STORAGE_KEY } from '@/lib/constants'
-import { ToastAction } from '@/components/ui/toast'
 import { useToast } from '@/components/ui/use-toast'
+import { useLocalStorage } from '@/hooks/use-localstorage'
 
 export default function OpenAISettingsCard() {
-  const { toast } = useToast()
-  const [apiKey, setAPIKey] = useState(
-    window.localStorage.getItem(API_KEY_LOCAL_STORAGE_KEY) || ''
+  const [apiKeyStore, setAPIKeyStore] = useLocalStorage(
+    API_KEY_LOCAL_STORAGE_KEY,
+    ''
   )
+  const [apiKey, setAPIKey] = useState(apiKeyStore)
   const [showAPIKey, setShowAPIKey] = useState(false)
+  const { toast } = useToast()
 
   function saveAPIKey(apiKey: string) {
-    window.localStorage.setItem(API_KEY_LOCAL_STORAGE_KEY, apiKey)
+    setAPIKeyStore(apiKey)
     toast({
       description: 'API key saved'
     })
   }
 
-  const isEqual =
-    apiKey === window.localStorage.getItem(API_KEY_LOCAL_STORAGE_KEY)
+  const isEqual = apiKey === apiKeyStore
 
   return (
     <Card>

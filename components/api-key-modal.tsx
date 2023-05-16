@@ -14,9 +14,13 @@ import { API_KEY_LOCAL_STORAGE_KEY } from '@/lib/constants'
 
 export default function ApiKeyModal() {
   const pathname = usePathname()
-  const showApiKeyModal =
-    localStorage.getItem(API_KEY_LOCAL_STORAGE_KEY) === null &&
-    !pathname.startsWith('/settings')
+  let showApiKeyModal
+
+  if (typeof window !== 'undefined') {
+    showApiKeyModal =
+      localStorage.getItem(API_KEY_LOCAL_STORAGE_KEY) === null &&
+      !pathname.startsWith('/settings')
+  }
 
   return (
     <AlertDialog open={showApiKeyModal}>

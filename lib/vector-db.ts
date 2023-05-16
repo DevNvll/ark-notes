@@ -1,4 +1,5 @@
 import { SortedArray } from './sorted-array'
+import { useEffect, useRef } from 'react'
 
 const DB_DEFAUlTS = {
   dbName: 'vectorDB',
@@ -306,6 +307,18 @@ class VectorDB {
       }
     })
   }
+}
+
+export function useVectorStore(vectorPath: string = 'embeddings') {
+  const db = useRef(null)
+
+  useEffect(() => {
+    db.current = new VectorDB({
+      vectorPath: 'embedding'
+    })
+  }, [])
+
+  return db.current as VectorDB
 }
 
 export { VectorDB }

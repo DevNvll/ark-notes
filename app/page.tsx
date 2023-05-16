@@ -1,15 +1,11 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { splitDocument } from '@/lib/markdown'
-import { VectorDB } from '@/lib/vector-db'
+import { useVectorStore } from '@/lib/vector-db'
 import { createEmbedding } from '@/lib/openai'
 import UploadedFilesTable from '@/components/documents/uploaded-files-table'
 import UploadFile from '@/components/documents/upload-file'
-
-const db = new VectorDB({
-  vectorPath: 'embedding'
-})
 
 export default function Home() {
   const [files, setFiles] = useState([])
@@ -21,16 +17,16 @@ export default function Home() {
     }[]
   >(null)
   const [isUploading, setIsUploading] = useState(false)
+  const db = useVectorStore()
 
-  async function getUploadedFiles() {
-    db.getAllFiles().then((docs) => {
-      setUploadedFiles(docs as any)
-    })
-  }
+  const getUploadedFiles = useCallback(async () => {
+    const docs = await db.getAllFiles()
+    setUploadedFiles(docs as any)
+  }, [db])
 
   useEffect(() => {
     getUploadedFiles()
-  }, [])
+  }, [getUploadedFiles])
 
   async function uploadFiles() {
     setIsUploading(true)
