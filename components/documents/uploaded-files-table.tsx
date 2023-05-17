@@ -9,13 +9,10 @@ import {
 import { format } from 'date-fns'
 import { ScrollArea } from '../ui/scroll-area'
 import { XIcon } from 'lucide-react'
+import { UploadedFile } from '@/types'
 
 interface Props {
-  files: {
-    title: string
-    fileId: string
-    date: number
-  }[]
+  files: UploadedFile[]
   handleDeleteFile: (fileId: string) => void
 }
 

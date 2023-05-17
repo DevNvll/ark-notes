@@ -8,15 +8,7 @@ import { createChain, sendMessage } from '@/lib/chat'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import AskResponse from '@/components/ask/ask-response'
-
-type Role = 'USER' | 'AI'
-
-interface Message {
-  id: string
-  text: string
-  role: Role
-  error?: boolean
-}
+import { Message, Role } from '@/types'
 
 function LoadingResponse() {
   return (

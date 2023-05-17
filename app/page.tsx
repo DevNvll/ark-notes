@@ -6,16 +6,11 @@ import { useVectorStore } from '@/lib/vector-db'
 import { createEmbedding } from '@/lib/openai'
 import UploadedFilesTable from '@/components/documents/uploaded-files-table'
 import UploadFile from '@/components/documents/upload-file'
+import { UploadedFile } from '@/types'
 
 export default function Home() {
   const [files, setFiles] = useState([])
-  const [uploadedFiles, setUploadedFiles] = useState<
-    {
-      title: string
-      fileId: string
-      date: number
-    }[]
-  >(null)
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>(null)
   const [isUploading, setIsUploading] = useState(false)
   const db = useVectorStore()
 
