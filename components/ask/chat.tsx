@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 import AskResponse from '@/components/ask/ask-response'
 import { Message, Role } from '@/types'
 import { LoadingResponse } from '@/components/ask/loading-response'
+import { ScrollArea } from '../ui/scroll-area'
 
 interface Props {
   compact?: boolean
@@ -68,7 +69,7 @@ export function Chat({ compact = false }: Props) {
 
   return (
     <div className="flex flex-col justify-between w-full h-full">
-      <div className="flex flex-col flex-grow mb-4 space-y-4">
+      <ScrollArea className="flex flex-col flex-grow max-h-full mb-4 space-y-4">
         {history.map((m) => {
           const isUser = m.role === 'USER'
           return (
@@ -98,7 +99,8 @@ export function Chat({ compact = false }: Props) {
           )
         })}
         {inflight && <LoadingResponse />}
-      </div>
+      </ScrollArea>
+
       <form
         onSubmit={handleSubmitMessage}
         className="flex flex-row items-center w-full space-x-4"

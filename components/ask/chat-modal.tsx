@@ -29,11 +29,13 @@ export function ChatModal() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="!h-[70%] !max-w-[60%] !max-h-[80%]">
+      <DialogContent className="!h-[600px] !max-w-[60%] !max-h-[600px]">
         <DialogHeader>
           <DialogTitle>Chat</DialogTitle>
         </DialogHeader>
-        <Chat compact />
+        <div className="h-[calc(600px-5rem)] ">
+          <Chat compact />
+        </div>
       </DialogContent>
     </Dialog>
   )
