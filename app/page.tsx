@@ -20,7 +20,7 @@ export default function Home() {
   const db = useVectorStore()
 
   const getUploadedFiles = useCallback(async () => {
-    const docs = await db.getAllFiles()
+    const docs = await db?.getAllFiles()
     setUploadedFiles(docs as any)
   }, [db])
 
