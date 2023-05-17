@@ -4,12 +4,14 @@ import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
 import { Button } from './ui/button'
+import { useChatModal } from './ask/modal-context'
 
 export function MainNav({
   className,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
   const pathname = usePathname()
+  const { setOpen: setChatModalOpen } = useChatModal()
 
   return (
     <nav className={cn('flex w-full justify-between', className)} {...props}>
@@ -47,9 +49,10 @@ export function MainNav({
           Settings
         </Link>
       </div>
-      <Link href="/ask">
-        <Button variant="default">Ask</Button>
-      </Link>
+
+      <Button variant="default" onClick={() => setChatModalOpen(true)}>
+        Ask
+      </Button>
     </nav>
   )
 }
