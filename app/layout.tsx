@@ -29,7 +29,7 @@ export default function RootLayout({
           <ChatModal />
           <div className="border-b ">
             <div className="flex items-center h-16 px-4">
-              <MainNav className="mx-6" />
+              <MainNav />
             </div>
           </div>
           <div className="flex-1 h-[calc(100%-4rem)] p-8 pt-6 space-y-4">

@@ -81,10 +81,10 @@ export function Chat({ compact = false }: Props) {
             >
               <div
                 className={cn(
-                  'px-4 py-3 rounded-[--radius] shadow-sm max-w-[80%]',
+                  'px-4 py-3 rounded-[--radius] shadow-sm max-w-[80%] text-black',
                   {
                     'bg-primary': isUser,
-                    'bg-gray-100 text-gray-900': !isUser,
+                    'bg-white ': !isUser,
                     'text-sm': compact
                   }
                 )}
