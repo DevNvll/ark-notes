@@ -19,8 +19,10 @@ interface Props {
 export function Chat({ compact = false }: Props) {
   const [history, setHistory] = useState<Message[]>([])
   const [inflight, setInflight] = useState(false)
+  const [writting, setWritting] = useState('')
   const chain = useRef<LLMChain>(null)
   const abortController = useRef<AbortController>(null)
+  const scrollArea = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const chatId = uuid()
@@ -45,18 +47,25 @@ export function Chat({ compact = false }: Props) {
     const text = e.target.message.value
     abortController.current = new AbortController()
     setInflight(true)
+    scrollToBottom(true)
     try {
       addMessage('USER', text)
       e.target.message.value = ''
       const message = await sendMessage(
         chain.current,
         text,
+        (token: string) => {
+          setWritting((w) => w + token)
+          scrollToBottom()
+        },
         abortController.current.signal
       )
       setInflight(false)
+      setWritting('')
       addMessage('AI', message.text)
     } catch (err) {
       setInflight(false)
+      setWritting('')
       if (err.name === 'AbortError') return
       addMessage('AI', 'Something went wrong', true)
     }
@@ -67,21 +76,34 @@ export function Chat({ compact = false }: Props) {
     setInflight(false)
   }
 
+  const scrollToBottom = (bypassScrollCheck?: boolean) => {
+    const element = scrollArea.current.children[1]
+    const { offsetHeight, scrollHeight, scrollTop } = element as HTMLDivElement
+    if (bypassScrollCheck || scrollHeight <= scrollTop + offsetHeight + 100) {
+      setTimeout(() => {
+        element.scrollTo(0, scrollHeight)
+      }, 1)
+    }
+  }
+
   return (
     <div className="flex flex-col justify-between w-full h-full">
-      <ScrollArea className="flex flex-col flex-grow max-h-full mb-4 space-y-4">
+      <ScrollArea
+        className="flex flex-col flex-grow max-h-full mb-4 space-y-4"
+        ref={scrollArea}
+      >
         {history.map((m) => {
           const isUser = m.role === 'USER'
           return (
             <div
               key={m.id}
-              className={cn('flex items-center space-x-2 w-full', {
+              className={cn('flex items-center space-x-2 w-full mb-4', {
                 'justify-end': isUser
               })}
             >
               <div
                 className={cn(
-                  'px-4 py-3 rounded-[--radius] shadow-sm max-w-[80%] text-black',
+                  'px-4 py-3 rounded-[--radius] shadow-sm text-black  max-w-[50%]',
                   {
                     'bg-primary': isUser,
                     'bg-white ': !isUser,
@@ -98,7 +120,7 @@ export function Chat({ compact = false }: Props) {
             </div>
           )
         })}
-        {inflight && <LoadingResponse />}
+        {inflight && <LoadingResponse writting={writting} />}
       </ScrollArea>
 
       <form

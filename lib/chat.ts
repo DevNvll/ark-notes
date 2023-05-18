@@ -10,6 +10,7 @@ import { BufferMemory } from 'langchain/memory'
 import { API_KEY_LOCAL_STORAGE_KEY } from './constants'
 import { createEmbedding, generateContext } from './openai'
 import { VectorDB } from './vector-db'
+import { CallbackManager } from 'langchain/callbacks'
 
 export async function getContext(question: string) {
   const db = new VectorDB({
@@ -32,6 +33,7 @@ export function createChain(chatId: string) {
 
   const chat = new ChatOpenAI({
     temperature: 0,
+    streaming: true,
     openAIApiKey
   })
 
@@ -43,12 +45,12 @@ export function createChain(chatId: string) {
       Given the following relevant sections from the user notes, answer the question using only that information. 
       If you are unsure and the answer is not explicitly written in the notes, just say \"Sorry, I don't know how to help with that.\" 
     `),
-    new MessagesPlaceholder(chatId),
     SystemMessagePromptTemplate.fromTemplate(`
       Relevant information:
       {context}
       (You do not need to use these pieces of information if not relevant)
     `),
+    new MessagesPlaceholder(chatId),
     HumanMessagePromptTemplate.fromTemplate('{input}')
   ])
 
@@ -70,15 +72,21 @@ export function createChain(chatId: string) {
 export const sendMessage = async (
   chain: LLMChain,
   message: string,
+  onNewToken: (token: string) => void,
   abortSignal: AbortSignal
 ) => {
   const context = await getContext(message)
 
-  const response = await chain.call({
-    context,
-    input: message,
-    signal: abortSignal
-  })
+  const response = await chain.call(
+    {
+      context,
+      input: message,
+      signal: abortSignal
+    },
+    CallbackManager.fromHandlers({
+      handleLLMNewToken: onNewToken
+    })
+  )
 
   return response
 }
