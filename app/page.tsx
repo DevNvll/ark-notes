@@ -61,7 +61,7 @@ export default function Home() {
   }
 
   return (
-    <div>
+    <div className="container">
       <h1 className="mb-8 text-2xl font-bold">My Documents</h1>
       <UploadFile
         files={files}
