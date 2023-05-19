@@ -1,4 +1,5 @@
 'use client'
+import { useEffect } from 'react'
 import { MainNav } from '@/components/main-nav'
 import './globals.css'
 import { Inter } from 'next/font/google'
@@ -7,6 +8,7 @@ import ApiKeyModal from '@/components/api-key-modal'
 import { Toaster } from '@/components/ui/toaster'
 import { ChatModal } from '@/components/ask/chat-modal'
 import { ModalProvider } from '@/components/ask/modal-context'
+import { bootstrapSettings } from '@/lib/settings'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,6 +22,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  useEffect(() => {
+    bootstrapSettings()
+  }, [])
+
   return (
     <html lang="en">
       <body className={cn('dark h-screen', inter.className)}>

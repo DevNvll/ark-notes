@@ -1,11 +1,8 @@
 import { Configuration, OpenAIApi } from 'openai'
 import GPT3NodeTokenizer from 'gpt3-tokenizer'
-import { API_KEY_LOCAL_STORAGE_KEY } from './constants'
+import { getOpenAIKey } from './settings'
 
-const apiKey =
-  typeof window !== 'undefined'
-    ? JSON.parse(localStorage.getItem(API_KEY_LOCAL_STORAGE_KEY))
-    : ''
+const apiKey = getOpenAIKey()
 
 const configuration = new Configuration({
   apiKey

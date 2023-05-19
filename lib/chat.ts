@@ -11,6 +11,7 @@ import { API_KEY_LOCAL_STORAGE_KEY } from './constants'
 import { createEmbedding, generateContext } from './openai'
 import { VectorDB } from './vector-db'
 import { CallbackManager } from 'langchain/callbacks'
+import { getCustomPrompt, getOpenAIKey } from './settings'
 
 export async function getContext(question: string) {
   const db = new VectorDB({
@@ -27,9 +28,7 @@ export async function getContext(question: string) {
 }
 
 export function createChain(chatId: string) {
-  const openAIApiKey = JSON.parse(
-    localStorage.getItem(API_KEY_LOCAL_STORAGE_KEY)
-  )
+  const openAIApiKey = getOpenAIKey()
 
   const chat = new ChatOpenAI({
     temperature: 0,
@@ -38,18 +37,20 @@ export function createChain(chatId: string) {
   })
 
   const chatPrompt = ChatPromptTemplate.fromPromptMessages([
-    SystemMessagePromptTemplate.fromTemplate(`
+    SystemMessagePromptTemplate.fromTemplate(
+      getCustomPrompt() ||
+        `
       You are a helpful AI assistant that answer questions about user texts. 
       Respond using markdown. 
       If your response has code, don't forget to add the language at the top of the markdown codeblock.
       Given the following relevant sections from the user notes, answer the question using only that information. 
       If you are unsure and the answer is not explicitly written in the notes, just say \"Sorry, I don't know how to help with that.\" 
-    `),
-    SystemMessagePromptTemplate.fromTemplate(`
       Relevant information:
       {context}
       (You do not need to use these pieces of information if not relevant)
-    `),
+      Question:
+    `
+    ),
     new MessagesPlaceholder(chatId),
     HumanMessagePromptTemplate.fromTemplate('{input}')
   ])
